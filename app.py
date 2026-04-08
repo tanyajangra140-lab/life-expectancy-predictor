@@ -13,7 +13,7 @@ st.write("### Improve your lifestyle and see how it affects your life expectancy
 # Sample dataset
 df = pd.read_csv("life_expectancy.csv")
 
-df = pd.DataFrame(data)
+
 
 X = df.drop('life_expectancy', axis=1)
 y = df['life_expectancy']
