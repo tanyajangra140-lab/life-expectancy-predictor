@@ -65,13 +65,7 @@ if st.button("Predict"):
     progress = int(result[0])
     st.progress(min(progress, 100))
 
-    st.success(f"Predicted Life Expectancy: {int(result[0])} years")
-
-    # Progress bar (visual effect)
-   progress = int(result[0])
-    st.progress(min(progress, 100))
-
-    st.success(f"Predicted Life Expectancy: {int(result[0])} years")
+    st.success(f"Predicted Life Expectancy: {int(result[0])} years")ears")
 
     # Risk Level
     if result > 75:
