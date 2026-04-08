@@ -11,23 +11,32 @@ st.markdown("<h1 style='text-align: center; color: #4CAF50;'>🧠 Life Expectanc
 st.write("### Improve your lifestyle and see how it affects your life expectancy!")
 
 # Sample dataset
-data = {
-    'age': [25, 40, 30, 50, 35, 60, 45, 28],
-    'sleep_hours': [7, 5, 6, 4, 8, 5, 6, 7],
-    'exercise_days': [5, 1, 3, 0, 4, 1, 2, 5],
-    'smoking': [0, 1, 0, 1, 0, 1, 1, 0],
-    'alcohol': [1, 3, 2, 4, 1, 3, 2, 1],
-    'stress_level': [3, 8, 5, 9, 4, 7, 6, 3],
-    'life_expectancy': [80, 65, 75, 60, 82, 62, 70, 78]
-}
+df = pd.read_csv("life_expectancy.csv")
 
 df = pd.DataFrame(data)
 
 X = df.drop('life_expectancy', axis=1)
 y = df['life_expectancy']
 
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.preprocessing import StandardScaler
+
+# Scaling
+scaler = StandardScaler()
+X = scaler.fit_transform(X)
+
+# Train model
+model = GradientBoostingRegressor()
+model.fit(X, y)
+
 model = RandomForestRegressor()
 model.fit(X, y)
+
+mortality = st.slider("Adult Mortality", 0, 500)
+bmi = st.slider("BMI", 10, 40)
+alcohol = st.slider("Alcohol Intake", 0, 10)
+schooling = st.slider("Years of Schooling", 0, 20)
+
 
 # Sidebar
 st.sidebar.header("⚙️ Enter Your Details")
@@ -47,12 +56,16 @@ st.subheader("📋 Your Lifestyle Summary")
 st.write(f"🛌 Sleep: {sleep} hrs | 🏃 Exercise: {exercise} days | 😰 Stress: {stress}/10")
 
 # Prediction
-if st.button("🔍 Predict Life Expectancy"):
+if st.button("Predict"):
 
-    input_data = np.array([[age, sleep, exercise, smoking_val, alcohol, stress]])
-    result = model.predict(input_data)[0]
+    input_data = [[mortality, bmi, alcohol, schooling]]
+    
+    # Apply same scaling
+    input_data = scaler.transform(input_data)
 
-    st.subheader("📊 Prediction Result")
+    result = model.predict(input_data)
+
+    st.success(f"Predicted Life Expectancy: {int(result[0])} years")
 
     # Progress bar (visual effect)
     progress = int(result)
