@@ -1,8 +1,16 @@
 import streamlit as st
 import numpy as np
-from sklearn.ensemble import RandomForestRegressor
 import pandas as pd
+from sklearn.ensemble import RandomForestRegressor
 
+# Page config
+st.set_page_config(page_title="Life Expectancy Predictor", page_icon="🧠", layout="centered")
+
+# Title
+st.markdown("<h1 style='text-align: center; color: #4CAF50;'>🧠 Life Expectancy Predictor</h1>", unsafe_allow_html=True)
+st.write("### Improve your lifestyle and see how it affects your life expectancy!")
+
+# Sample dataset
 data = {
     'age': [25, 40, 30, 50, 35, 60, 45, 28],
     'sleep_hours': [7, 5, 6, 4, 8, 5, 6, 7],
@@ -21,17 +29,59 @@ y = df['life_expectancy']
 model = RandomForestRegressor()
 model.fit(X, y)
 
-st.title("🧠 Life Expectancy Predictor")
+# Sidebar
+st.sidebar.header("⚙️ Enter Your Details")
 
-age = st.slider("Age", 10, 100)
-sleep = st.slider("Sleep Hours", 0, 12)
-exercise = st.slider("Exercise Days per Week", 0, 7)
-smoking = st.selectbox("Smoking", [0, 1])
-alcohol = st.slider("Alcohol Frequency", 0, 5)
-stress = st.slider("Stress Level", 1, 10)
+age = st.sidebar.slider("Age", 10, 100)
+sleep = st.sidebar.slider("Sleep Hours", 0, 12)
+exercise = st.sidebar.slider("Exercise Days/week", 0, 7)
+smoking = st.sidebar.selectbox("Smoking", ["No", "Yes"])
+alcohol = st.sidebar.slider("Alcohol Frequency", 0, 5)
+stress = st.sidebar.slider("Stress Level", 1, 10)
 
-if st.button("Predict"):
-    input_data = np.array([[age, sleep, exercise, smoking, alcohol, stress]])
-    result = model.predict(input_data)
+# Convert categorical
+smoking_val = 1 if smoking == "Yes" else 0
 
-    st.success(f"Predicted Life Expectancy: {int(result[0])} years")
+# Show input summary
+st.subheader("📋 Your Lifestyle Summary")
+st.write(f"🛌 Sleep: {sleep} hrs | 🏃 Exercise: {exercise} days | 😰 Stress: {stress}/10")
+
+# Prediction
+if st.button("🔍 Predict Life Expectancy"):
+
+    input_data = np.array([[age, sleep, exercise, smoking_val, alcohol, stress]])
+    result = model.predict(input_data)[0]
+
+    st.subheader("📊 Prediction Result")
+
+    # Progress bar (visual effect)
+    progress = int(result)
+    st.progress(min(progress, 100))
+
+    st.success(f"🎯 Expected Life Span: {int(result)} years")
+
+    # Risk Level
+    if result > 75:
+        st.success("✅ Low Risk - Healthy Lifestyle")
+    elif result > 65:
+        st.warning("⚠️ Moderate Risk")
+    else:
+        st.error("❌ High Risk")
+
+    # Suggestions
+    st.subheader("💡 Suggestions to Improve")
+
+    if sleep < 6:
+        st.write("👉 Increase sleep to at least 7-8 hours")
+    if exercise < 3:
+        st.write("👉 Exercise at least 3-5 days per week")
+    if stress > 7:
+        st.write("👉 Practice meditation or relaxation techniques")
+    if smoking_val == 1:
+        st.write("👉 Avoid smoking for better health")
+    if alcohol > 2:
+        st.write("👉 Reduce alcohol consumption")
+
+# Footer
+st.markdown("---")
+st.caption("⚠️ This is an AI-based prediction and not medical advice.")
