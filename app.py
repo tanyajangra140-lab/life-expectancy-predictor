@@ -57,13 +57,13 @@ st.write(f"🛌 Sleep: {sleep} hrs | 🏃 Exercise: {exercise} days | 😰 Stres
 
 # Prediction
 if st.button("Predict"):
+    input_data = np.array([[mortality, bmi, alcohol, schooling]])
+    input_scaled = scaler.transform(input_data)
 
-    input_data = [[mortality, bmi, alcohol, schooling]]
-    
-    # Apply same scaling
-    input_data = scaler.transform(input_data)
+    result = model.predict(input_scaled)
 
-    result = model.predict(input_data)
+    progress = int(result[0])
+    st.progress(min(progress, 100))
 
     st.success(f"Predicted Life Expectancy: {int(result[0])} years")
 
