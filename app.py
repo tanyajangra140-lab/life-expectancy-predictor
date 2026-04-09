@@ -15,11 +15,11 @@ df = pd.read_csv("life_expectancy.csv")
 
 
 
-X = df[['mortality','bmi','alcohol','schooling','sleep','exercise','stress','smoking']]
-y = df['life_expectancy']
-
 df = df.dropna()
 df = df.astype(float)
+
+X = df[['mortality','bmi','alcohol','schooling','sleep','exercise','stress','smoking']]
+y = df['life_expectancy']
 
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.preprocessing import StandardScaler
@@ -32,8 +32,7 @@ X = scaler.fit_transform(X)
 model = GradientBoostingRegressor()
 model.fit(X, y)
 
-model = RandomForestRegressor()
-model.fit(X, y)
+
 
 mortality = st.slider("Adult Mortality", 0, 500)
 bmi = st.slider("BMI", 10, 40)
@@ -66,9 +65,7 @@ if st.button("Predict"):
 
     result = model.predict(input_scaled)
 
-    # ✅ define penalty first
     penalty = 0
-
     if sleep < 5:
         penalty += 10
     if exercise == 0:
@@ -82,10 +79,9 @@ if st.button("Predict"):
 
     st.success(f"Predicted Life Expectancy: {int(final_result)} years")
 
-    # Risk Level
-    if result > 75:
+    if final_result > 75:
         st.success("✅ Low Risk - Healthy Lifestyle")
-    elif result > 65:
+    elif final_result > 65:
         st.warning("⚠️ Moderate Risk")
     else:
         st.error("❌ High Risk")
@@ -93,18 +89,7 @@ if st.button("Predict"):
     # Suggestions
     st.subheader("💡 Suggestions to Improve")
 
-    penalty = 0
-
-if sleep < 5:
-    penalty += 10
-if exercise == 0:
-    penalty += 10
-if stress > 8:
-    penalty += 10
-if smoking_val == 1:
-    penalty += 10
-
-final_result = result[0] - penalty
+   
 
 # Footer
 st.markdown("---")
