@@ -66,8 +66,19 @@ if st.button("Predict"):
 
     result = model.predict(input_scaled)
 
-    progress = int(result[0])
-    st.progress(min(progress, 100))
+    # ✅ define penalty first
+    penalty = 0
+
+    if sleep < 5:
+        penalty += 10
+    if exercise == 0:
+        penalty += 10
+    if stress > 8:
+        penalty += 10
+    if smoking_val == 1:
+        penalty += 10
+
+    final_result = result[0] - penalty
 
     st.success(f"Predicted Life Expectancy: {int(final_result)} years")
 
