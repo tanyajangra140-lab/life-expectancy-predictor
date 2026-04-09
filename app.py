@@ -15,8 +15,11 @@ df = pd.read_csv("life_expectancy.csv")
 
 
 
-X = df.drop('life_expectancy', axis=1)
+X = df[['mortality','bmi','alcohol','schooling','sleep','exercise','stress','smoking']]
 y = df['life_expectancy']
+
+df = df.dropna()
+df = df.astype(float)
 
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.preprocessing import StandardScaler
@@ -42,22 +45,23 @@ schooling = st.slider("Years of Schooling", 0, 20)
 st.sidebar.header("⚙️ Enter Your Details")
 
 age = st.sidebar.slider("Age", 10, 100)
-sleep = st.sidebar.slider("Sleep Hours", 0, 12)
-exercise = st.sidebar.slider("Exercise Days/week", 0, 7)
-smoking = st.sidebar.selectbox("Smoking", ["No", "Yes"])
-alcohol = st.sidebar.slider("Alcohol Frequency", 0, 5)
-stress = st.sidebar.slider("Stress Level", 1, 10)
+sleep = st.slider("Sleep Hours", 0, 12)
+exercise = st.slider("Exercise Days", 0, 7)
+stress = st.slider("Stress Level", 1, 10)
+smoking = st.selectbox("Smoking", ["No", "Yes"])
 
-# Convert categorical
 smoking_val = 1 if smoking == "Yes" else 0
+alcohol = st.sidebar.slider("Alcohol Frequency", 0, 5)
+
+
 
 # Show input summary
 st.subheader("📋 Your Lifestyle Summary")
 st.write(f"🛌 Sleep: {sleep} hrs | 🏃 Exercise: {exercise} days | 😰 Stress: {stress}/10")
-
+st.write(df)
 # Prediction
 if st.button("Predict"):
-    input_data = np.array([[mortality, bmi, alcohol, schooling]])
+    input_data = np.array([[mortality, bmi, alcohol, schooling, sleep, exercise, stress, smoking_val]])
     input_scaled = scaler.transform(input_data)
 
     result = model.predict(input_scaled)
