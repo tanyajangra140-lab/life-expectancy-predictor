@@ -78,16 +78,18 @@ if st.button("Predict"):
     # Suggestions
     st.subheader("💡 Suggestions to Improve")
 
-    if sleep < 6:
-        st.write("👉 Increase sleep to at least 7-8 hours")
-    if exercise < 3:
-        st.write("👉 Exercise at least 3-5 days per week")
-    if stress > 7:
-        st.write("👉 Practice meditation or relaxation techniques")
-    if smoking_val == 1:
-        st.write("👉 Avoid smoking for better health")
-    if alcohol > 2:
-        st.write("👉 Reduce alcohol consumption")
+    penalty = 0
+
+if sleep < 5:
+    penalty += 10
+if exercise == 0:
+    penalty += 10
+if stress > 8:
+    penalty += 10
+if smoking_val == 1:
+    penalty += 10
+
+final_result = result[0] - penalty
 
 # Footer
 st.markdown("---")
